@@ -7,31 +7,40 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <!-- Bootstrap core CSS -->
-    <link href="https://getbootstrap.com/docs/4.3/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    {{-- my title --}}
+    <title>{{ config('app.name', 'Kamel') }}</title>
 
-    {{-- custom styles for this template --}}
-    <link href="{{ asset('css/albumCss.css') }}" rel="stylesheet">
+    <!-- Custom fonts for this template-->
+    <link href="{{ asset('customized/vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+          rel="stylesheet">
+
+    <!-- Custom styles for this template-->
+    <link href="{{ asset('customized/css/sb-admin-2.min.css') }}" rel="stylesheet">
+
 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    {{-- my title --}}
-    <title>{{ config('app.name', 'Kamel') }}</title>
-
 
 </head>
-<body>
 
-{{--navigation bar--}}
-@include('layouts.nav')
 
-{{--main body--}}
-@yield('mainContainer')
+<body id="page-top">
 
+
+
+@yield('page')
+
+
+
+<!-- Scroll to Top Button-->
+@include('layouts.toTop')
+
+<!-- Logout Modal-->
+@include('layouts.logoutModal')
 <!-- Scripts -->
-@include('layouts.script')
+@include('layouts.scripts.mainScript')
 
 
 </body>

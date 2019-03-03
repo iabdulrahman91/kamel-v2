@@ -11,9 +11,7 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', 'GuestController@index');
 
 Auth::routes();
 
@@ -35,6 +33,7 @@ Route::delete('/listings/{listing}', 'ListingController@destroy');
 // for rent request
 Route::get('/rentRequests', 'RentRequestController@index');
 Route::get('/rentRequests/create', 'RentRequestController@create');
+Route::get('/rentRequests/received', 'RentRequestController@received');
 Route::post('/rentRequests', 'RentRequestController@store');
 Route::get('/rentRequests/{listing}/edit', 'RentRequestController@edit');
 Route::get('/rentRequests/{listing}', 'RentRequestController@show');

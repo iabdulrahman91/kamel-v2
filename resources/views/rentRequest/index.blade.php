@@ -1,25 +1,27 @@
-@extends('layouts.user')
+@extends('layouts.mainContent')
 @section('content')
-    @if (count($rentRequests))
+    @if (count($result))
 
         <table class="table">
             <thead class="thead-dark">
             <tr>
+                <th scope="col">item name</th>
                 <th scope="col">requester</th>
-                <th scope="col">list id</th>
+                <th scope="col">owener</th>
                 <th scope="col">Start</th>
                 <th scope="col">End</th>
-                <th scope="col">Price</th>
+                <th scope="col">cost</th>
             </tr>
             </thead>
             <tbody>
-            @foreach($rentRequests as $listing)
+            @foreach($result as $r)
                 <tr>
-                    <th scope="row">{{$listing->user_id}}</th>
-                    <td>{{$listing->listing_id}}</td>
-                    <td>{{$listing->start}}</td>
-                    <td>{{$listing->end}}</td>
-                    <td>{{$listing->price}}</td>
+                    <th scope="row">{{$r['item']}}</th>
+                    <td>{{$r['renter']}}</td>
+                    <td>{{$r['owner']}}</td>
+                    <td>{{$r['start']}}</td>
+                    <td>{{$r['end']}}</td>
+                    <td>SAR {{$r['cost']}}</td>
                     {{--<td> <a href="/listings/{{$listing->id}}" class="btn btn-secondary btn-lg active" role="button" aria-pressed="true">View</a> </td>--}}
                 </tr>
             @endforeach

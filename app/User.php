@@ -58,10 +58,10 @@ class User extends Authenticatable
 
         try{
             $this->rentRequests()->save($rentRequest);
+            return true;
 
         } catch (\Illuminate\Database\QueryException $qe){
-            dd($qe->getCode() . " already requested");
-
+            return false;
         }
     }
 
