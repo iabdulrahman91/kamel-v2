@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Booking;
+use App\Listing;
+use App\RentRequest;
 use Illuminate\Http\Request;
 
 class BookingController extends Controller
@@ -15,6 +17,7 @@ class BookingController extends Controller
     public function index()
     {
         //
+        return view('booking.index')->with('active', Booking::get());
     }
 
     /**
@@ -24,24 +27,47 @@ class BookingController extends Controller
      */
     public function create()
     {
-        //
+
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store()
     {
-        //
+        // get all requests belongs to the the listing
+        $rentRequest = RentRequest::find(request('rentRequest_id'));
+        $allRequests = $rentRequest->listing->rentRequests;
+
+        // reject all requests and update the request to be deactivated and deletedBy = "booking"
+        foreach ($allRequests as $r) {
+            $r->active = false;
+            $r->deletedBy = ($r->id == $rentRequest->id) ? "booking" : "owner";
+            $rentRequest->user->updateRequest($r);
+        }
+        // get copy of the request
+        $booking = new Booking([
+            'id' => $rentRequest->id,
+            'user_id' => $rentRequest->user_id,
+            'listing_id' => $rentRequest->listing_id,
+            'start' => $rentRequest->start,
+            'end' => $rentRequest->end,
+            'price' => $rentRequest->price,
+        ]);
+
+        // save it in the booking by the requester
+        $rentRequest->user->addBooking($booking);
+
+        return redirect('/bookings');
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Booking  $booking
+     * @param  \App\Booking $booking
      * @return \Illuminate\Http\Response
      */
     public function show(Booking $booking)
@@ -52,7 +78,7 @@ class BookingController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Booking  $booking
+     * @param  \App\Booking $booking
      * @return \Illuminate\Http\Response
      */
     public function edit(Booking $booking)
@@ -63,8 +89,8 @@ class BookingController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Booking  $booking
+     * @param  \Illuminate\Http\Request $request
+     * @param  \App\Booking $booking
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Booking $booking)
@@ -75,7 +101,7 @@ class BookingController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Booking  $booking
+     * @param  \App\Booking $booking
      * @return \Illuminate\Http\Response
      */
     public function destroy(Booking $booking)

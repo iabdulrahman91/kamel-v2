@@ -1,4 +1,4 @@
-@extends('layouts.card')
+@extends('layouts.cardForm')
 @section('cardContent')
 
     <div class="text-center card-header">
@@ -105,7 +105,7 @@
             <div class="form-group">
                 <div class="row justify-content-md-center">
                     <div class="col-md-6">
-                        <input class="btn btn-primary btn-user btn-block" type="submit" type="submit"
+                        <input class="btn btn-primary btn-user btn-block" type="submit"
                                value="List this Item">
                         <input class="btn btn-outline-danger btn-user btn-block" type="reset" value="Reset">
                         <a class="btn btn-light btn-user btn-block" href="{{ redirect()->back()->getTargetUrl() }}"

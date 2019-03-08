@@ -50,10 +50,18 @@ class User extends Authenticatable
         return $this->hasMany(RentRequest::class);
     }
 
+    public function bookings(){
+        return $this->hasMany(Booking::class, 'user_id');
+    }
+
+
+
+    // listings
     public function addListing(Listing $listing){
         $this->listings()->save($listing);
     }
 
+    // RentRequests
     public function addRentRequest(RentRequest $rentRequest){
 
         try{
@@ -65,6 +73,16 @@ class User extends Authenticatable
         }
     }
 
+    public function updateRequest(RentRequest $rentRequest){
+
+        $this->rentRequests()->save($rentRequest);
+    }
+
+
+    // booking
+    public function addBooking(Booking $booking){
+        $this->bookings()->save($booking);
+    }
 
     // because I used uuid('id')
     protected static function boot()

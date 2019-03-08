@@ -1,39 +1,140 @@
-@extends('layouts.mainContent')
+@extends('layouts.cardForm')
 @section('content')
-    @if (count($result))
+    <!-- DataTales Example -->
+    <div class="container mx-2">
+        jumb to section
+    </div>
+    <div class="card shadow m-1">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-warning">Sent Rent Requests</h6>
+        </div>
+        <div class="card-body p-0">
+            @if (count($active))
+                <div class="table-responsive">
+                    <table class="table table-bordered text-center" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                        <tr>
+                            <th>item name</th>
+                            <th>owener</th>
+                            <th>Start</th>
+                            <th>End</th>
+                            <th>Price</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
 
-        <table class="table">
-            <thead class="thead-dark">
-            <tr>
-                <th scope="col">item name</th>
-                <th scope="col">requester</th>
-                <th scope="col">owener</th>
-                <th scope="col">Start</th>
-                <th scope="col">End</th>
-                <th scope="col">cost</th>
-            </tr>
-            </thead>
-            <tbody>
-            @foreach($result as $r)
-                <tr>
-                    <th scope="row">{{$r['item']}}</th>
-                    <td>{{$r['renter']}}</td>
-                    <td>{{$r['owner']}}</td>
-                    <td>{{$r['start']}}</td>
-                    <td>{{$r['end']}}</td>
-                    <td>SAR {{$r['cost']}}</td>
-                    {{--<td> <a href="/listings/{{$listing->id}}" class="btn btn-secondary btn-lg active" role="button" aria-pressed="true">View</a> </td>--}}
-                </tr>
-            @endforeach
-            </tbody>
-        </table>
-    @else
+                        <tbody>
 
-        <div class="jumbotron text-center bg-light">
-            <div class="jumbotron-heading h1">
-                No Requests found
+                        @foreach($active as $r)
+                            <tr>
+                                <th>{{$r['item']}}</th>
+                                <td>{{$r['owner']}}</td>
+                                <td>{{$r['start']}}</td>
+                                <td>{{$r['end']}}</td>
+                                <td>SAR {{$r['price']}}</td>
+                                <td>
+                                    <form class="user justify-content-center text-center" method="POST"
+                                          action="/rentRequests/{{$r['rentRequest_id']}}">
+                                        {{ csrf_field() }}
+                                        {{method_field('DELETE')}}
+                                        <input href="#" class="col btn btn-danger btn-sm btn-circle" type="submit"
+                                               value="X">
+                                    </form>
+
+                                </td>
+                            </tr>
+                        @endforeach
+
+                        </tbody>
+                    </table>
+                </div>
+            @else
+                <div class="jumbotron text-center bg-light m-0">
+                    <div class="jumbotron-heading h1">
+                        No Requests sent
+                    </div>
+                </div>
+            @endif
+        </div>
+    </div>
+    @if (count($inActive))
+        <div class="card shadow m-1">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-secondary">Canceled Rent Requests</h6>
+            </div>
+            <div class="card-body p-0">
+
+                <div class="table-responsive">
+                    <table class="table table-bordered text-center" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                        <tr>
+                            <th>item name</th>
+                            <th>owener</th>
+                            <th>Start</th>
+                            <th>End</th>
+                            <th>Price</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+
+                        @foreach($inActive as $r)
+                            <tr>
+                                <th>{{$r['item']}}</th>
+                                <td>{{$r['owner']}}</td>
+                                <td>{{$r['start']}}</td>
+                                <td>{{$r['end']}}</td>
+                                <td>SAR {{$r['price']}}</td>
+
+                            </tr>
+                        @endforeach
+
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     @endif
+    @if (count($rejected))
+        <div class="card shadow m-1">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-secondary">Rejected Rent Requests</h6>
+            </div>
+            <div class="card-body p-0">
 
+                <div class="table-responsive">
+                    <table class="table table-bordered text-center" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                        <tr>
+                            <th>item name</th>
+                            <th>owener</th>
+                            <th>Start</th>
+                            <th>End</th>
+                            <th>Price</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+
+                        @foreach($rejected as $r)
+                            <tr>
+                                <th>{{$r['item']}}</th>
+                                <td>{{$r['owner']}}</td>
+                                <td>{{$r['start']}}</td>
+                                <td>{{$r['end']}}</td>
+                                <td>SAR {{$r['price']}}</td>
+
+                            </tr>
+                        @endforeach
+
+                        </tbody>
+                    </table>
+                </div>
+
+
+            </div>
+        </div>
+    @endif
+    @include('layouts.scripts.tableScript')
 @endsection
+

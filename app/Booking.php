@@ -9,7 +9,7 @@ use Illuminate\Support\Str;
 class Booking extends Model
 {
     protected $fillable = [
-        'user_id','listing_id', 'start', 'end', 'price'
+        'id','listing_id', 'start', 'end', 'price'
     ];
     //
     public function user(){
@@ -20,14 +20,14 @@ class Booking extends Model
         return $this->belongsTo(Listing::class);
     }
     // because I used uuid('id')
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::creating(function ($model) {
-            $model->{$model->getKeyName()} = (string) Str::uuid();
-        });
-    }
+//    protected static function boot()
+//    {
+//        parent::boot();
+//
+//        static::creating(function ($model) {
+//            $model->{$model->getKeyName()} = (string) Str::uuid();
+//        });
+//    }
 
     public function getIncrementing()
     {

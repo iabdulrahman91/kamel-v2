@@ -1,4 +1,4 @@
-@extends('layouts.card')
+@extends('layouts.cardForm')
 @section('cardContent')
 
 

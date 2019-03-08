@@ -42,14 +42,14 @@
 
     <!-- Approved request -->
     <li class="nav-item">
-        <a class="nav-link" href="/trasactions">
+        <a class="nav-link" href="/bookings">
             <i class="fas fa-fw fa-chart-area"></i>
             <span>Approved</span></a>
     </li>
 
     <!-- current rent -->
     <li class="nav-item">
-        <a class="nav-link" href="/trasactions">
+        <a class="nav-link" href="/bookings">
             <i class="fas fa-fw fa-chart-area"></i>
             <span>current rent</span></a>
     </li>

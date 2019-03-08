@@ -26,25 +26,35 @@ class RentRequestController extends Controller
     public function index()
     {
         // GET /rentRequests/
-        $rentRequests = RentRequest::where('user_id', auth()->id())->get();
-        $result = [];
+        $rentRequests = auth()->user()->rentRequests;
+        $active = [];
+        $inActive = [];
+        $rejected = [];
         foreach ($rentRequests as $r) {
-            $listing = Listing::find($r->listing_id);
             $item = [
-                'item' => $listing->item,
-                'renter' => auth()->user($r->user_id)->fname,
-                'owner' => $listing->user->fname,
+                'rentRequest_id' => $r->id,
+                'item' => $r->listing->item,
+                'renter' => $r->user->fname,
+                'owner' => $r->listing->user->fname,
                 'start' => $r->start,
                 'end' => $r->end,
-                'cost' => $r->price
+                'price' => $r->price
 
             ];
 
-            array_push($result, $item);
+            if ($r->active) {
+                array_push($active, $item);
+
+            } elseif (!$r->active && $r->deletedBy == "customer") {
+                array_push($inActive, $item);
+            } elseif (!$r->active && $r->deletedBy == "owner") {
+                array_push($rejected, $item);
+            }
+
 
         }
 //      dd($result);
-        return view('rentRequest.index', compact('result'));
+        return view('rentRequest.index', compact('active', 'inActive', 'rejected'));
     }
 
     /**
@@ -65,7 +75,7 @@ class RentRequestController extends Controller
      * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store()
     {
         // POST /rentRequests
 
@@ -145,7 +155,7 @@ class RentRequestController extends Controller
      */
     public function update(Request $request, RentRequest $rentRequest)
     {
-        //
+
     }
 
     /**
@@ -156,28 +166,56 @@ class RentRequestController extends Controller
      */
     public function destroy(RentRequest $rentRequest)
     {
-        //
+        $current_user = auth()->user()->id;
+
+        // if canceled by renter
+        if ($rentRequest->user->id == $current_user) {
+            $rentRequest->active = false;
+            $rentRequest->deletedBy = "customer";
+
+            // if rejected by the owner
+        } elseif ($rentRequest->listing->user->id == $current_user) {
+            $rentRequest->active = false;
+            $rentRequest->deletedBy = "owner";
+        }
+
+        $rentRequest->user->updateRequest($rentRequest);
+
+
+        return redirect('/rentRequests');
     }
 
     public function received()
     {
         // find all listings belong to the user
-        $mylistings = auth()->user()->listings()->get();
-        //find request for user's listing
-        $received = RentRequest::whereIn('listing_id', $mylistings)->get();
-        // prepare result
-        $result = [];
-        foreach ($received as $r) {
-            array_push($result, [
-                'requester_id' => $r->user_id,
-                'requester_name' => User::find($r->user_id)->fname,
-                'item' => $r->listing->item,
-                'start' => $r->start,
-                'end' => $r->end,
-                'price' => $r->price
+        $userListings = auth()->user()->listings;
 
-            ]);
+        $active = [];
+        $inActive = [];
+
+        foreach ($userListings as $l) {
+            foreach ($l->rentRequests as $r) {
+                $req = [
+                    'rentRequest_id' => $r->id,
+                    'requester_name' => $r->user->fname,
+                    'item' => $r->listing->item,
+                    'start' => $r->start,
+                    'end' => $r->end,
+                    'price' => $r->price
+                ];
+
+                // if the request still active
+                if ($r->active){
+                    array_push($active, $req);
+
+                    // if the the request is deactivated by the owner
+                } elseif (!$r->active && $r->deletedBy == "owner"){
+                    array_push($inActive, $req);
+                }
+            }
         }
-        return view('rentRequest.received', compact('result'));
+        // prepare result
+
+        return view('rentRequest.received', compact('active', 'inActive'));
     }
 }
