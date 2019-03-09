@@ -43,4 +43,7 @@ Route::delete('/rentRequests/{rentRequest}', 'RentRequestController@destroy');
 
 // for Booking
 Route::get('/bookings', 'BookingController@index');
+Route::get('/bookings/received', 'BookingController@received');
+Route::get('/bookings/currentSent', 'BookingController@currentSent');
+Route::get('/bookings/currentReceived', 'BookingController@currentReceived');
 Route::post('/bookings', 'BookingController@store');

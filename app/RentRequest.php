@@ -8,18 +8,23 @@ use Illuminate\Support\Str;
 class RentRequest extends Model
 {
     protected $fillable = [
-        'listing_id', 'start', 'end', 'price'
+        'owner_id','listing_id', 'start', 'end', 'price'
     ];
 
     //
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function owner()
+    {
+        return $this->belongsTo(User::class, 'owner_id');
     }
 
     public function listing()
     {
-        return $this->belongsTo(Listing::class);
+        return $this->belongsTo(Listing::class, 'listing_id');
     }
 
     // because I used uuid('id')

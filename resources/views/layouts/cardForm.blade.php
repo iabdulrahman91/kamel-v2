@@ -2,8 +2,8 @@
 @section('content')
     <div class="row justify-content-center">
         <!-- Nested Row within Card Body -->
-        <div class="col px-5 py-3">
-            <div class="card o-hidden border-0 shadow-lg ">
+        <div class="col m-md-auto">
+            <div class="card o-hidden border-0 shadow-lg m-lg-3">
                 @yield('cardContent')
             </div>
         </div>

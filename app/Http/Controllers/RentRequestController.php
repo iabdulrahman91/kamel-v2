@@ -26,7 +26,7 @@ class RentRequestController extends Controller
     public function index()
     {
         // GET /rentRequests/
-        $rentRequests = auth()->user()->rentRequests;
+        $rentRequests = auth()->user()->sentRentRequests;
         $active = [];
         $inActive = [];
         $rejected = [];
@@ -35,7 +35,7 @@ class RentRequestController extends Controller
                 'rentRequest_id' => $r->id,
                 'item' => $r->listing->item,
                 'renter' => $r->user->fname,
-                'owner' => $r->listing->user->fname,
+                'owner' => $r->owner->fname,
                 'start' => $r->start,
                 'end' => $r->end,
                 'price' => $r->price
@@ -45,9 +45,9 @@ class RentRequestController extends Controller
             if ($r->active) {
                 array_push($active, $item);
 
-            } elseif (!$r->active && $r->deletedBy == "customer") {
+            } elseif (!$r->active && $r->deletedBy == auth()->user()->id) {
                 array_push($inActive, $item);
-            } elseif (!$r->active && $r->deletedBy == "owner") {
+            } elseif (!$r->active && $r->deletedBy == $r->owner->id) {
                 array_push($rejected, $item);
             }
 
@@ -107,6 +107,7 @@ class RentRequestController extends Controller
         // request save from user model
         $result = auth()->user()->addRentRequest(
             new RentRequest([
+                'owner_id' => $listing->user->id,
                 'listing_id' => $listing->id,
                 'start' => $startDate->format('Y-m-d'),
                 'end' => $endDate->format('Y-m-d'),
@@ -168,19 +169,12 @@ class RentRequestController extends Controller
     {
         $current_user = auth()->user()->id;
 
-        // if canceled by renter
-        if ($rentRequest->user->id == $current_user) {
+        if ($current_user == $rentRequest->user->id || $current_user == $rentRequest->owner->id) {
             $rentRequest->active = false;
-            $rentRequest->deletedBy = "customer";
+            $rentRequest->deletedBy = $current_user;
 
-            // if rejected by the owner
-        } elseif ($rentRequest->listing->user->id == $current_user) {
-            $rentRequest->active = false;
-            $rentRequest->deletedBy = "owner";
+            $rentRequest->user->updateRequest($rentRequest);
         }
-
-        $rentRequest->user->updateRequest($rentRequest);
-
 
         return redirect('/rentRequests');
     }
@@ -188,32 +182,31 @@ class RentRequestController extends Controller
     public function received()
     {
         // find all listings belong to the user
-        $userListings = auth()->user()->listings;
+        $rentRequests = auth()->user()->receivedRentRequests;
 
         $active = [];
         $inActive = [];
 
-        foreach ($userListings as $l) {
-            foreach ($l->rentRequests as $r) {
-                $req = [
-                    'rentRequest_id' => $r->id,
-                    'requester_name' => $r->user->fname,
-                    'item' => $r->listing->item,
-                    'start' => $r->start,
-                    'end' => $r->end,
-                    'price' => $r->price
-                ];
+        foreach ($rentRequests as $r) {
+            $req = [
+                'rentRequest_id' => $r->id,
+                'requester_name' => $r->user->fname,
+                'item' => $r->listing->item,
+                'start' => $r->start,
+                'end' => $r->end,
+                'price' => $r->price
+            ];
 
-                // if the request still active
-                if ($r->active){
-                    array_push($active, $req);
+            // if the request still active
+            if ($r->active) {
+                array_push($active, $req);
 
-                    // if the the request is deactivated by the owner
-                } elseif (!$r->active && $r->deletedBy == "owner"){
-                    array_push($inActive, $req);
-                }
+                // if the the request is deactivated by the owner
+            } elseif (!$r->active && $r->deletedBy == auth()->user()->id) {
+                array_push($inActive, $req);
             }
         }
+
         // prepare result
 
         return view('rentRequest.received', compact('active', 'inActive'));

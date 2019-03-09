@@ -1,95 +1,102 @@
-@extends('layouts.cardForm')
-@section('cardContent')
-
-
-    <div class="h3 text-center card-header">
-        {{$listing->item}}
-    </div>
-    <div class="card-body">
-        <div class="form-group">
-            @if ($errors->has('rentRequest_id'))
-                <div class="row justify-content-md-center">
-                    <div class="col-md-5 badge-danger">
-
-                        <strong>{{ $errors->first('rentRequest_id') }}</strong>
-
-                    </div>
+@extends('layouts.mainContent')
+@section('content')
+    <div class="row justify-content-center">
+        <!-- Nested Row within Card Body -->
+        <div class="col m-md-auto">
+            <div class="card o-hidden border-0 shadow-lg m-lg-3">
+                <div class="h3 text-center card-header">
+                    {{$listing->item}}
                 </div>
-            @endif
-        </div>
-        <form class="user justify-content-center text-center" method="POST" action="/rentRequests">
-            {{ csrf_field() }}
-            <input type="hidden" name="listing_id" value="{{$listing->id}}">
-            <div class="form-group">
-                <div class="col-md-auto">
-                    <label for="start" class="h3">{{$listing->location}}</label>
-                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        @if ($errors->has('rentRequest_id'))
+                            <div class="row justify-content-md-center">
+                                <div class="col-md-5 badge-danger">
 
-            </div>
+                                    <strong>{{ $errors->first('rentRequest_id') }}</strong>
 
-            <div class="form-group{{ $errors->has('start') ? ' has-error' : '' }}">
-                <div class="row justify-content-md-center">
-                    <div class="col-md-6">
-                        <label for="start" class="col-form-label">
-                            Start Date This item is available from {{$listing->start}}
-                        </label>
-                        <input id="start" type="date" class="form-control form-control-user text-center" name="start"
-                               value="{{ old('start') }}" required>
-                        @if ($errors->has('start'))
-                            <span class="help-block">
-                                        <strong>{{ $errors->first('start') }}</strong>
-                                    </span>
+                                </div>
+                            </div>
                         @endif
                     </div>
-                </div>
-            </div>
-            <div class="form-group{{ $errors->has('end') ? ' has-error' : '' }}">
-                <div class="row justify-content-md-center">
-                    <div class="col-md-6">
-                        <label for="start" class="col-form-label">
-                            End Date This item is available until {{$listing->end}}
-                        </label>
-                        <input id="end" type="date" class="form-control form-control-user text-center" name="end"
-                               value="{{ old('end') }}" onchange="cal()" required>
-                        @if ($errors->has('end'))
-                            <span class="help-block">
-                                        <strong>{{ $errors->first('end') }}</strong>
-                                    </span>
-                        @endif
-                    </div>
-                </div>
-            </div>
-            <div class="form-group{{ $errors->has('end') ? ' has-error' : '' }}">
-                <div class="row justify-content-md-center">
-                    <div class="col-md-5">
-                        <input id="numdays2" type="text" class="form-control form-control-user text-center"
-                               name="numdays"
-                               disabled="true">
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                @if ($errors->has('listing_id'))
-                    <div class="row justify-content-md-center">
-                        <div class="col-md-5 badge-danger">
-
-                                    <strong>{{ $errors->first('listing_id') }}</strong>
+                    <form class="user justify-content-center text-center" method="POST" action="/rentRequests">
+                        {{ csrf_field() }}
+                        <input type="hidden" name="listing_id" value="{{$listing->id}}">
+                        <div class="form-group">
+                            <div class="col-md-auto">
+                                <label for="start" class="h3">{{$listing->location}}</label>
+                            </div>
 
                         </div>
-                    </div>
-                @endif
-            </div>
-            <div class="form-group">
-                <div class="row justify-content-md-center">
-                    <div class="col-md-6">
-                        <input class="btn btn-primary btn-user btn-block" type="submit" type="submit"
-                               value="Request this item">
-                        <a class="btn btn-outline-danger btn-user btn-block"
-                           href="/listings" role="button">Cancel</a>
-                    </div>
+
+                        <div class="form-group{{ $errors->has('start') ? ' has-error' : '' }}">
+                            <div class="row justify-content-md-center">
+                                <div class="col-md-6">
+                                    <label for="start" class="col-form-label">
+                                        Start Date This item is available from {{$listing->start}}
+                                    </label>
+                                    <input id="start" type="date" class="form-control form-control-user text-center"
+                                           name="start"
+                                           value="{{ old('start') }}" required>
+                                    @if ($errors->has('start'))
+                                        <span class="help-block">
+                                        <strong>{{ $errors->first('start') }}</strong>
+                                    </span>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group{{ $errors->has('end') ? ' has-error' : '' }}">
+                            <div class="row justify-content-md-center">
+                                <div class="col-md-6">
+                                    <label for="start" class="col-form-label">
+                                        End Date This item is available until {{$listing->end}}
+                                    </label>
+                                    <input id="end" type="date" class="form-control form-control-user text-center"
+                                           name="end"
+                                           value="{{ old('end') }}" onchange="cal()" required>
+                                    @if ($errors->has('end'))
+                                        <span class="help-block">
+                                        <strong>{{ $errors->first('end') }}</strong>
+                                    </span>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group{{ $errors->has('end') ? ' has-error' : '' }}">
+                            <div class="row justify-content-md-center">
+                                <div class="col-md-5">
+                                    <input id="numdays2" type="text" class="form-control form-control-user text-center"
+                                           name="numdays"
+                                           disabled="true">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @if ($errors->has('listing_id'))
+                                <div class="row justify-content-md-center">
+                                    <div class="col-md-5 badge-danger">
+
+                                        <strong>{{ $errors->first('listing_id') }}</strong>
+
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
+                        <div class="form-group">
+                            <div class="row justify-content-md-center">
+                                <div class="col-md-6">
+                                    <input class="btn btn-primary btn-user btn-block" type="submit" type="submit"
+                                           value="Request this item">
+                                    <a class="btn btn-outline-danger btn-user btn-block"
+                                       href="/listings" role="button">Cancel</a>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
-        </form>
+        </div>
     </div>
 
     {{--calculte cost--}}

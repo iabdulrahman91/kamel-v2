@@ -23,8 +23,14 @@ class ListingController extends Controller
     public function index()
     {
         // GET /listings
+        $listings = null;
+        if ($item = request('item')){
+            $listings = Listing::where('item', 'like' , '%'.$item.'%')->get();
+        } else {
+            $listings = Listing::all();
+        }
 
-        return view('listing.index')->with('listings', Listing::all());
+        return view('listing.index')->with('listings', $listings);
     }
 
     /**

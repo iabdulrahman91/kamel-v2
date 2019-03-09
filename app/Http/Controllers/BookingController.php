@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Booking;
 use App\Listing;
 use App\RentRequest;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class BookingController extends Controller
@@ -17,7 +18,33 @@ class BookingController extends Controller
     public function index()
     {
         //
-        return view('booking.index')->with('active', Booking::get());
+        return view('booking.index')->with('active', auth()->user()->sentBookings()->where('active', true)->get());
+    }
+
+    public function received()
+    {
+        //
+        return view('booking.received')->with('active', auth()->user()->receivedBookings()->where('active', true)->get());
+    }
+
+    public function currentSent()
+    {
+        //
+        return view('booking.currentSent')->with('active', auth()->user()->sentBookings()->where([
+            ['active', true],
+            ['start', '<=', Carbon::today()],
+            ['end', '>=', Carbon::today()]
+        ])->get());
+    }
+
+    public function currentReceived()
+    {
+        //
+        return view('booking.currentReceived')->with('active', auth()->user()->receivedBookings()->where([
+            ['active', true],
+            ['start', '<=', Carbon::today()],
+            ['end', '>=', Carbon::today()]
+        ])->get());
     }
 
     /**
@@ -45,8 +72,8 @@ class BookingController extends Controller
         // reject all requests and update the request to be deactivated and deletedBy = "booking"
         foreach ($allRequests as $r) {
             $r->active = false;
-            $r->deletedBy = ($r->id == $rentRequest->id) ? "booking" : "owner";
-            $rentRequest->user->updateRequest($r);
+            $r->deletedBy = ($r->id == $rentRequest->id) ? "1" : $r->owner->id;
+            $rentRequest->owner->updateRequest($r);
         }
         // get copy of the request
         $booking = new Booking([
@@ -59,7 +86,7 @@ class BookingController extends Controller
         ]);
 
         // save it in the booking by the requester
-        $rentRequest->user->addBooking($booking);
+        $rentRequest->owner->addBooking($booking);
 
         return redirect('/bookings');
     }
@@ -73,6 +100,8 @@ class BookingController extends Controller
     public function show(Booking $booking)
     {
         //
+
+
     }
 
     /**

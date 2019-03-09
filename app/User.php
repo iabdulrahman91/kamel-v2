@@ -46,14 +46,22 @@ class User extends Authenticatable
         return $this->hasMany(Listing::class);
     }
 
-    public function rentRequests(){
-        return $this->hasMany(RentRequest::class);
+    public function sentRentRequests(){
+        return $this->hasMany(RentRequest::class, 'user_id');
     }
 
-    public function bookings(){
-        return $this->hasMany(Booking::class, 'user_id');
+    public function receivedRentRequests(){
+        return $this->hasMany(RentRequest::class, 'owner_id');
     }
 
+
+    public function sentBookings(){
+        return $this->hasMany(Booking::class,'user_id');
+    }
+
+    public function receivedBookings(){
+        return $this->hasMany(Booking::class, 'owner_id');
+    }
 
 
     // listings
@@ -65,7 +73,7 @@ class User extends Authenticatable
     public function addRentRequest(RentRequest $rentRequest){
 
         try{
-            $this->rentRequests()->save($rentRequest);
+            $this->sentRentRequests()->save($rentRequest);
             return true;
 
         } catch (\Illuminate\Database\QueryException $qe){
@@ -75,13 +83,13 @@ class User extends Authenticatable
 
     public function updateRequest(RentRequest $rentRequest){
 
-        $this->rentRequests()->save($rentRequest);
+        $this->receivedBookings()->save($rentRequest);
     }
 
 
     // booking
     public function addBooking(Booking $booking){
-        $this->bookings()->save($booking);
+        $this->receivedBookings()->save($booking);
     }
 
     // because I used uuid('id')

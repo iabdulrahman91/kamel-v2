@@ -9,11 +9,15 @@ use Illuminate\Support\Str;
 class Booking extends Model
 {
     protected $fillable = [
-        'id','listing_id', 'start', 'end', 'price'
+        'id', 'user_id', 'listing_id', 'start', 'end', 'price'
     ];
     //
+    public function owner(){
+        return $this->belongsTo(User::class, 'owner_id');
+    }
+
     public function user(){
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function listing(){

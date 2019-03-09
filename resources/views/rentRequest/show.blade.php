@@ -1,4 +1,4 @@
 @extends('layouts.mainContent')
-@section('content')
+@section('cardContent')
     show rent request
 @endsection

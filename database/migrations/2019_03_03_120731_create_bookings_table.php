@@ -19,6 +19,8 @@ class CreateBookingsTable extends Migration
             $table->foreign('user_id')->references('id')->on('users');
             $table->string('listing_id');
             $table->foreign('listing_id')->references('id')->on('listings');
+            $table->string('owner_id');
+            $table->foreign('owner_id')->references('id')->on('users');
             $table->date('start');
             $table->date('end');
             $table->double('price', 8, 2);
