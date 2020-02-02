@@ -1,7 +1,23 @@
-{{--container for main body for user--}}
+{{--container for main body for  auth user--}}
 @extends('layouts.master')
-@section('mainContainer')
-    <main role="main">
-        @yield('content')
-    </main>
+@section('page')
+
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+
+    <!-- Sidebar -->
+    @include('layouts.sidebar')
+    <!-- End of Sidebar -->
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            @yield('mainContent')
+        </div>
+        <!-- End of Content Wrapper -->
+
+    </div>
+    <!-- End of Page Wrapper -->
+
+
 @endsection

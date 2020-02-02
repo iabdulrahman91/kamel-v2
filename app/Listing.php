@@ -15,6 +15,11 @@ class Listing extends Model
       return $this->belongsTo(User::class);
   }
 
+    public function rentRequests(){
+        return $this->hasMany(RentRequest::class);
+    }
+
+
   // because I used uuid('id')
   protected static function boot()
   {

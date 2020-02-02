@@ -11,9 +11,7 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', 'GuestController@index');
 
 Auth::routes();
 
@@ -35,8 +33,22 @@ Route::delete('/listings/{listing}', 'ListingController@destroy');
 // for rent request
 Route::get('/rentRequests', 'RentRequestController@index');
 Route::get('/rentRequests/create', 'RentRequestController@create');
+Route::get('/rentRequests/received', 'RentRequestController@received');
 Route::post('/rentRequests', 'RentRequestController@store');
-Route::get('/rentRequests/{listing}/edit', 'RentRequestController@edit');
-Route::get('/rentRequests/{listing}', 'RentRequestController@show');
-Route::patch('/rentRequests/{listing}', 'RentRequestController@update');
-Route::delete('/rentRequests/{listing}', 'RentRequestController@destroy');
+Route::get('/rentRequests/{rentRequest}/edit', 'RentRequestController@edit');
+Route::get('/rentRequests/{rentRequest}', 'RentRequestController@show');
+Route::patch('/rentRequests/{rentRequest}', 'RentRequestController@update');
+Route::delete('/rentRequests/{rentRequest}', 'RentRequestController@destroy');
+
+
+// for Booking
+Route::get('/bookings', 'BookingController@index');
+Route::get('/bookings/received', 'BookingController@received');
+Route::get('/bookings/currentSent', 'BookingController@currentSent');
+Route::get('/bookings/currentReceived', 'BookingController@currentReceived');
+Route::post('/bookings', 'BookingController@store');
+
+
+Route::get('/myApi/user', function () {
+
+});

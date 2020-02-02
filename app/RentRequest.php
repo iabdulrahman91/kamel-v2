@@ -7,31 +7,43 @@ use Illuminate\Support\Str;
 
 class RentRequest extends Model
 {
-  protected $fillable = [
-    'listing_id', 'start', 'end', 'price'
-  ];
- //
- public function user(){
-     return $this->belongsTo(User::class);
- }
+    protected $fillable = [
+        'owner_id','listing_id', 'start', 'end', 'price'
+    ];
 
- // because I used uuid('id')
- protected static function boot()
- {
-     parent::boot();
+    //
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 
-     static::creating(function ($model) {
-         $model->{$model->getKeyName()} = (string) Str::uuid();
-     });
- }
+    public function owner()
+    {
+        return $this->belongsTo(User::class, 'owner_id');
+    }
 
- public function getIncrementing()
- {
-     return false;
- }
+    public function listing()
+    {
+        return $this->belongsTo(Listing::class, 'listing_id');
+    }
 
- public function getKeyType()
- {
-     return 'string';
- }
+    // because I used uuid('id')
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            $model->{$model->getKeyName()} = (string)Str::uuid();
+        });
+    }
+
+    public function getIncrementing()
+    {
+        return false;
+    }
+
+    public function getKeyType()
+    {
+        return 'string';
+    }
 }

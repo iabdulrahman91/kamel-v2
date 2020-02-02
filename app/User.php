@@ -9,9 +9,11 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
+use Laravel\Passport\HasApiTokens;
+
 class User extends Authenticatable
 {
-    use Notifiable;
+    use HasApiTokens, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -46,25 +48,51 @@ class User extends Authenticatable
         return $this->hasMany(Listing::class);
     }
 
-    public function rentRequests(){
-        return $this->hasMany(RentRequest::class);
+    public function sentRentRequests(){
+        return $this->hasMany(RentRequest::class, 'user_id');
     }
 
+    public function receivedRentRequests(){
+        return $this->hasMany(RentRequest::class, 'owner_id');
+    }
+
+
+    public function sentBookings(){
+        return $this->hasMany(Booking::class,'user_id');
+    }
+
+    public function receivedBookings(){
+        return $this->hasMany(Booking::class, 'owner_id');
+    }
+
+
+    // listings
     public function addListing(Listing $listing){
         $this->listings()->save($listing);
     }
 
+    // RentRequests
     public function addRentRequest(RentRequest $rentRequest){
 
         try{
-            $this->rentRequests()->save($rentRequest);
+            $this->sentRentRequests()->save($rentRequest);
+            return true;
 
         } catch (\Illuminate\Database\QueryException $qe){
-            dd($qe->getCode() . " already requested");
-
+            return false;
         }
     }
 
+    public function updateRequest(RentRequest $rentRequest){
+
+        $this->receivedBookings()->save($rentRequest);
+    }
+
+
+    // booking
+    public function addBooking(Booking $booking){
+        $this->receivedBookings()->save($booking);
+    }
 
     // because I used uuid('id')
     protected static function boot()
