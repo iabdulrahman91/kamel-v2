@@ -47,3 +47,8 @@ Route::get('/bookings/received', 'BookingController@received');
 Route::get('/bookings/currentSent', 'BookingController@currentSent');
 Route::get('/bookings/currentReceived', 'BookingController@currentReceived');
 Route::post('/bookings', 'BookingController@store');
+
+
+Route::get('/myApi/user', function () {
+
+});

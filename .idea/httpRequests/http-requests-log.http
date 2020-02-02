@@ -1,0 +1,8 @@
+POST https://kamel.test/api/user/create?fname=Abdul&lname=alanazi&email=a@a.com&phone=0512345678&password=123456
+Accept: */*
+Cache-Control: no-cache
+
+<> 2019-03-16T114534.405.html
+
+###
+
